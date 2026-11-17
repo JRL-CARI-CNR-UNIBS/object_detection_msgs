@@ -1,0 +1,28 @@
+# Detect objects in one or more views of the scene.
+#
+# A view i is given by ONE of:
+#   (a) color_images[i] + depth_images[i] + camera_infos[i]
+#       depth aligned to color (same size), 16UC1 (mm) or 32FC1 (m)
+#   (b) point_clouds[i]
+#       organized cloud (height > 1) with x, y, z and rgb or rgba fields
+#   (c) color_images[i] + camera_infos[i] + point_clouds[i]
+#       any cloud (organized or not), projected into the color image
+#
+# Each array must be empty or have one element per view. When depth and
+# cloud are both given for a view, the depth image is used.
+
+sensor_msgs/Image[] color_images
+sensor_msgs/Image[] depth_images
+sensor_msgs/CameraInfo[] camera_infos
+sensor_msgs/PointCloud2[] point_clouds
+
+string target_frame        # frame of the 3D outputs; empty = frame of view 0
+string[] classes           # keep only these class names; empty = node default
+float32 min_score          # 0 = node default
+bool merge_views           # merge the 3D detections of the same object seen in several views
+---
+bool success
+string message
+vision_msgs/Detection2DArray[] detections_2d   # one per view; header = header of the view
+vision_msgs/Detection3DArray detections_3d     # objects with has_3d; header.frame_id = target frame
+DetectedObject[] objects                       # all objects with full information
